@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="6.0.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.9" />
+    <PackageReference Include="Npgsql" Version="6.0.7" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Dapper" />
+    <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <None Remove="Microsoft.AspNetCore.DataProtection" />
+    <None Remove="Microsoft.AspNetCore.Cryptography.KeyDerivation" />
+    <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+    <None Remove="NLog" />
+    <None Remove="Npgsql" />
+    <None Remove="Extensions\" />
+    <None Remove="Utilities\" />
+    <None Remove="Utilities\Jwt\" />
+    <None Remove="Utilities\Secure\" />
+    <None Remove="NLog.Web.AspNetCore" />
+    <None Remove="Model\" />
+    <None Remove="Controllers\Services\" />
+    <None Remove="Controllers\Interfaces\" />
+    <None Remove="Models\DataModel\" />
+    <None Remove="Common\" />
+    <None Remove="Common\Connection\" />
+    <None Remove="Models\ViewModel\" />
+    <None Remove="Properties\PublishProfiles\FolderProfile.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="Utilities\Jwt\" />
+    <Folder Include="Utilities\Secure\" />
+    <Folder Include="Models\" />
+    <Folder Include="Controllers\Services\" />
+    <Folder Include="Controllers\Interfaces\" />
+    <Folder Include="Models\DataModel\" />
+    <Folder Include="Common\" />
+    <Folder Include="Common\Connection\" />
+    <Folder Include="Models\ViewModel\" />
+  </ItemGroup>
+</Project>
