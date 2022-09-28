@@ -1,13 +1,15 @@
 @page
+@model FrontApp.Pages.User.LoginModel
 @using System.Security.Claims;
-@model LoginInfo
 @{
     ViewData["Title"] = "Login";
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 @section Scripts{
-    <script>function test() {
-            fetch("https://localhost:1235/api/User/GetToken", {
+    <script>
+
+        function Login() {
+            fetch(baseUrl + "/api/User/GetToken", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -15,42 +17,46 @@
                 },
                 redirect: 'follow',
                 body: JSON.stringify({
-                    "userID": "user111",
-                    "password": "111111",
+                    "userID": $('input[name=userid]').val(),
+                    "password": $('input[name=password]').val(),
                     "rememberMe": true
                 })
-            }).then(response => response.json())
-            .then(response => {
-                $('#UserSp').text(response.userName);
-                window.localStorage.setItem('name', response.userName);
-                window.location.href = "/"
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = "/"
+                } else {
+                    console.log(response.status)
+                }
+            }
+            ).catch((e) => {
+                @*console.log(e.message);*@
             });
-            
+
         }</script>
 }
 <h1>@ViewData["Title"]</h1>
 <div class="row">
     <div class="col-md-4">
-        <form method="post" onsubmit="btnLogin.disabled = true; return true;">
-            <div class="text-danger" asp-validation-summary="All"></div>
+        <form method="post">
+            <div class="text-danger"></div>
             <div class="form-group">
-                @Html.DisplayNameFor(m => m.UserID)
-                <input type="text" name="userid" class="form-control" asp-for="UserID" placeholder="User ID" autofocus />
-                <span class="text-danger" asp-validation-for="UserID"></span>
+                UserID
+                <input type="text" name="userid" class="form-control" placeholder="UserID" autofocus />
+                <span class="text-danger" name="spUserID"></span>
             </div>
             <div class="form-group">
-                @Html.DisplayNameFor(m => m.Password)
-                <input type="password" class="form-control" asp-for="Password" placeholder="Password" />
-                <span class="text-danger" asp-validation-for="Password"></span>
+                Password
+                <input type="password" name="password" class="form-control" placeholder="Password" />
+                <span class="text-danger"></span>
             </div>
             <div class="checkbox">
-                <label asp-for="RememberMe">
-                    <input type="checkbox" asp-for="RememberMe" placeholder="Remember" />
-                    @Html.DisplayNameFor(m => m.RememberMe)
+                <label>
+                    <input type="checkbox" placeholder="Remember" />
+                    RememberMe
                 </label>
-                <span class="text-danger" asp-validation-for="RememberMe"></span>
+                <span class="text-danger"></span>
             </div>
         </form>
-        <button name="btnLogin" onclick="test()" class="btn btn-primary">Login</button>
+        <button name="btnLogin" onclick="Login()" class="btn btn-primary">Login</button>
     </div>
 </div>

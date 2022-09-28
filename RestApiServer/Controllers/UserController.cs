@@ -82,14 +82,15 @@ namespace RestApiServer.Controllers
                         Role = roles.RoleID,
                     }, jwtSettings);
                     SetCookies("X-Access-Token", Token.Token, 1);
-                    Response.Cookies.Append("X-UserID", user.UserID, new CookieOptions() { HttpOnly= false, SameSite= SameSiteMode.Strict });
+                    SetCookies("X-UserID", user.UserID);
                     SetCookies("X-Refresh-Token", Token.RefreshToken);
+                    Response.Cookies.Append("X-UserName", user.UserName, new CookieOptions() { HttpOnly= false, SameSite= SameSiteMode.Strict, Expires= DateTime.Now.AddMonths(1) });
                 }
                 else
                 {
-                    return BadRequest("wrong password");
+                    return BadRequest();
                 }
-                return Ok(Token);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -126,6 +127,7 @@ namespace RestApiServer.Controllers
             SetCookies("X-Access-Token", Token.Token, 1);
             SetCookies("X-UserID", user.UserID, 1);
             SetCookies("X-Refresh-Token", Token.RefreshToken);
+            Response.Cookies.Append("X-UserName", user.UserName, new CookieOptions() { HttpOnly = false, SameSite = SameSiteMode.Strict, Expires = DateTime.Now.AddMonths(1) });
             return Ok();
         }
 
@@ -134,6 +136,7 @@ namespace RestApiServer.Controllers
         {
             Response.Cookies.Delete("X-Access-Token");
             Response.Cookies.Delete("X-UserID");
+            Response.Cookies.Delete("X-UserName");
             Response.Cookies.Delete("X-Refresh-Token");
 
             return Ok("LogOut");

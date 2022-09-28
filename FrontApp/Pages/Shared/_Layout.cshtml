@@ -1,9 +1,8 @@
 ﻿@using System.Security.Claims;
 <script>window.addEventListener('load', (e) => {
 
-        let name = window.localStorage.getItem('name');
-        if (name != null) {
-            $('#grantList').text(name);
+    if (userInfo != null) {
+        $('#grantList').text(userInfo);
             $('#afList').show();
             $('#liLogin').hide();
             $('#liRegister').hide();
@@ -11,21 +10,11 @@
             $('#afList').hide();
             $('#liLogin').show();
             $('#liRegister').show();
-        }
+    }
     });
-    function LogOut() {
-        fetch("https://localhost:1235/api/User/LogOut", {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(() => {
-            console.log("test");
-            window.localStorage.removeItem('name');
-            window.location.href = "/User/Login"
-        });
-    }</script>
+    
+   
+    </script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
