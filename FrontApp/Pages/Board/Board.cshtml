@@ -1,0 +1,12 @@
+@page
+@model FrontApp.Pages.Board.BoardModel
+@{
+    ViewData["Title"] = "Board";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Board</h1>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

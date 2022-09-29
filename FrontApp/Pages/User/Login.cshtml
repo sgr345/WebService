@@ -7,7 +7,6 @@
 }
 @section Scripts{
     <script>
-
         function Login() {
             fetch(baseUrl + "/api/User/GetToken", {
                 method: 'POST',
@@ -29,7 +28,6 @@
                 }
             }
             ).catch((e) => {
-                @*console.log(e.message);*@
             });
 
         }</script>
