@@ -1,10 +1,34 @@
 @page
-@model FrontApp.Pages.Board.BoardModel
 @{
     ViewData["Title"] = "Board";
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
+<script>
+    window.addEventListener('load', () => {
+       
+        CallData();
 
+    }); 
+    function CallData() {
+        fetch(baseUrl + "/api/User/GetDataAllOfLoginUser", {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            redirect: 'follow'
+        }).then(response => {
+            if (response.ok) {
+            } else if (response.status == 401) {
+                window.location.href = "/User/Login"
+            } else {
+                console.log(response.status)
+            }
+        }
+        ).catch((e) => {
+        });
+    }
+</script>
 <h1>Board</h1>
 
 @section Scripts {
