@@ -12,14 +12,22 @@
     <None Remove="Swashbuckle.AspNetCore" />
     <None Remove="ViewModels\" />
     <None Remove="Newtonsoft.Json" />
+    <None Remove="Pages\Board\" />
+    <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <None Remove="Common\" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\User\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="Pages\Board\" />
+    <Folder Include="Common\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
   </ItemGroup>
 </Project>

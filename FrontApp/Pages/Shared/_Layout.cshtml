@@ -1,16 +1,17 @@
 ﻿@using System.Security.Claims;
 <script>window.addEventListener('load', (e) => {
 
-    if (userInfo != null) {
+    if (userInfo != null && userInfo != "") {
         $('#grantList').text(userInfo);
             $('#afList').show();
             $('#liLogin').hide();
             $('#liRegister').hide();
-        } else {
+    } else {
+            console.log(userInfo)
             $('#afList').hide();
             $('#liLogin').show();
             $('#liRegister').show();
-    }
+        }
     });
     
    
@@ -41,6 +42,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href ="/Board/Board">Board</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav flex-grow-2">

@@ -82,7 +82,6 @@ namespace RestApiServer.Controllers
                         Role = roles.RoleID,
                     }, jwtSettings);
                     SetCookies("X-Access-Token", Token.Token, 1);
-                    SetCookies("X-UserID", user.UserID);
                     SetCookies("X-Refresh-Token", Token.RefreshToken);
                     Response.Cookies.Append("X-UserName", user.UserName, new CookieOptions() { HttpOnly= false, SameSite= SameSiteMode.Strict, Expires= DateTime.Now.AddMonths(1) });
                 }

@@ -1,0 +1,177 @@
+@page
+@{
+    ViewData["Title"] = "Board";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+@section Scripts{
+
+    <script src="~/utils/jquery.dataTables.min.js"></script>
+    <script src="~/utils/dataTables.bootstrap4.min.js"></script>
+    <script>
+        let totalData;
+        let dataPerPage;
+        let pageCount = 10;
+        let globalCurrentPage = 1;
+        let dataList = null;
+
+        window.addEventListener('load', () => {
+
+            CallData();
+
+            dataPerPage = $("#dataPerPage").val();
+
+            totalData = 5;
+
+            displayData(1, dataPerPage);
+
+            paging(totalData, dataPerPage, pageCount, 1);
+
+        });
+        const params = {
+            pageNo: '1',
+            pageSize: '5'
+        };
+        const query_params = new URLSearchParams(params);
+        function CallData() {
+            fetch(baseUrl + "/api/Board/GetBoardInfo?" + query_params, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                redirect: 'follow'
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+            }).then((json) => {
+
+                $('#hrList').DataTable({
+                    "lengthChange": false,
+                    "searching": false,
+                    "info": false,
+                    "paging": false,
+                    "data": json,
+                "columns": [
+                    { "data": "No" },
+                    { "data": "userName" },
+                    { "data": "title" },
+                    { "data": "createdAt" },
+                    { "data": "readcount" }
+                ]
+            });
+                console.log(json)
+            }).catch((e) => {
+                alert(e);
+            });
+        }
+
+        function paging(totalData, dataPerPage, pageCount, currentPage) {
+            console.log("currentPage : " + currentPage);
+
+            totalPage = Math.ceil(totalData / dataPerPage);
+
+            if (totalPage < pageCount) {
+                pageCount = totalPage;
+            }
+
+            let pageGroup = Math.ceil(currentPage / pageCount);
+            let last = pageGroup * pageCount;
+
+            if (last > totalPage) {
+                last = totalPage;
+            }
+
+            let first = last - (pageCount - 1);
+            let next = last + 1;
+            let prev = first - 1;
+
+            let pageHtml = "";
+
+            if (prev > 0) {
+                pageHtml += "<li><a href='#' id='prev'> Prev </a></li>";
+            }
+
+            for (var i = first; i <= last; i++) {
+                if (currentPage == i) {
+                    pageHtml +=
+                        "<li class='on'><a href='#' id='" + i + "'>" + i + "</a></li>";
+                } else {
+                    pageHtml += "<li><a href='#' id='" + i + "'>" + i + "</a></li>";
+                }
+            }
+
+            if (last < totalPage) {
+                pageHtml += "<li><a href='#' id='next'> Next </a></li>";
+            }
+
+            $("#pagingul").html(pageHtml);
+            let displayCount = "";
+
+            $("#pagingul li a").click(function () {
+                let $id = $(this).attr("id");
+                selectedPage = $(this).text();
+
+                if ($id == "next") selectedPage = next;
+                if ($id == "prev") selectedPage = prev;
+
+                globalCurrentPage = selectedPage;
+
+                paging(totalData, dataPerPage, pageCount, selectedPage);
+                displayData(selectedPage, dataPerPage);
+            });
+        }
+
+        function displayData(currentPage, dataPerPage) {
+
+
+        }
+    </script>
+}
+
+<h1 class="h3 mb-2 text-gray-800">@ViewData["Title"]</h1>
+
+<p class="mb-4 note">
+
+</p>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">BoardList</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive table-striped">
+            <select id="dataPerPage">
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+            <table class="table table-bordered" id="hrList" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center bg-warning">#</th>
+                        <th class="text-center bg-warning">
+                            Title
+                        </th>
+                        <th class="text-center bg-warning">
+                            UserName
+                        </th>
+                        <th class="text-center bg-warning">
+                            UpdatedAt
+                        </th>
+                        <th class="text-center bg-warning">
+                            ReadCount
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="7">Data Not Exist</td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <ul id="pagingul">
+            </ul>
+        </div>
+    </div>
+</div>

@@ -24,6 +24,19 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+//ユーザー情報確認
+app.Use(async (context, next) => {
+
+    if(context.Request.Path == "/User/Login")
+    {
+        if (context.Request.Cookies.ContainsKey("X-UserName"))
+        {
+            context.Request.Path = "/";
+        }
+    }
+    await next(context);
+});
+
 
 
 app.UseHttpsRedirection();

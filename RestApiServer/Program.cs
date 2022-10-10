@@ -24,6 +24,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IDBConnection, PostgresProvider>();
 builder.Services.AddScoped<IUser, UserService>();
+builder.Services.AddScoped<IBoard, BoardService>();
 builder.Services.AddHttpContextAccessor(); //Accessor
 builder.Services.AddJWTTokenServices(builder.Configuration); //Jwt
 builder.Services.AddEndpointsApiExplorer();
