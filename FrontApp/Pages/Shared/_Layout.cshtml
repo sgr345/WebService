@@ -1,20 +1,18 @@
 ﻿@using System.Security.Claims;
-<script>window.addEventListener('load', (e) => {
-
+<script>
+    window.addEventListener('load', (e) => {
     if (userInfo != null && userInfo != "") {
         $('#grantList').text(userInfo);
             $('#afList').show();
             $('#liLogin').hide();
             $('#liRegister').hide();
     } else {
-            console.log(userInfo)
             $('#afList').hide();
             $('#liLogin').show();
             $('#liRegister').show();
         }
     });
     
-   
     </script>
 <!DOCTYPE html>
 <html lang="en">
