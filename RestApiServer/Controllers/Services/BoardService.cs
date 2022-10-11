@@ -57,7 +57,15 @@ namespace RestApiServer.Controllers.Services
 
                 var boardInfo = new BoardInfo()
                 {
-                    boardList = boardList.ToList()
+                    boardList = boardList.ToList(),
+                    TotalItems = totalBoardCount,
+                    NumberLinksPerPage = numberLInksPerPage,
+                    CurrentPage = pageNo,
+                    ItemsPerPage = itemPerPage,
+                    FirstItem = itemPerPage * (pageNo - 1) + 1,
+                    LastItem = itemPerPage * pageNo,
+                    SearchSubject = searchSubject,
+                    SearchKeyword = keyWord
                 };
 
                 return boardInfo;

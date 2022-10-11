@@ -12,28 +12,23 @@
         let dataPerPage;
         let pageCount = 10;
         let globalCurrentPage = 1;
-        let dataList = null;
 
         window.addEventListener('load', () => {
 
-            CallData();
 
             dataPerPage = $("#dataPerPage").val();
-
-            totalData = 5;
-
             displayData(1, dataPerPage);
-
             paging(totalData, dataPerPage, pageCount, 1);
 
         });
-        const params = {
-            pageNo: '1',
-            pageSize: '5'
-        };
-        const query_params = new URLSearchParams(params);
-        function CallData() {
-            fetch(baseUrl + "/api/Board/GetBoardInfo?" + query_params, {
+        
+        async function displayData(currentPage, pageSize) {
+            const params = {
+                pageNo: currentPage,
+                pageSize: pageSize
+            };
+            const query_params = new URLSearchParams(params);
+            var data = await fetch(baseUrl + "/api/Board/GetBoardInfo?" + query_params, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -44,33 +39,35 @@
                 if (response.ok) {
                     return response.json();
                 }
-            }).then((json) => {
-
-                $('#hrList').DataTable({
-                    "lengthChange": false,
-                    "searching": false,
-                    "info": false,
-                    "paging": false,
-                    "data": json,
-                "columns": [
-                    { "data": "No" },
-                    { "data": "userName" },
-                    { "data": "title" },
-                    { "data": "createdAt" },
-                    { "data": "readcount" }
-                ]
-            });
-                console.log(json)
             }).catch((e) => {
                 alert(e);
             });
+
+            $('#hrList').DataTable({
+                "lengthChange": false,
+                "searching": false,
+                "info": false,
+                "paging": false,
+                "destroy": true,
+                "data": data.boardList,
+                "columns": [
+                    { "data": "no" },
+                    { "data": "title" },
+                    { "data": "userName" },
+                    { "data": "createdAt" },
+                    { "data": "readCount" }
+                ]
+            });
+
+            totalData = data.totalItems
+            currentPage = data.currentPage
         }
 
         function paging(totalData, dataPerPage, pageCount, currentPage) {
-            console.log("currentPage : " + currentPage);
+            console.log(dataPerPage)
+            console.log(totalData)
 
             totalPage = Math.ceil(totalData / dataPerPage);
-
             if (totalPage < pageCount) {
                 pageCount = totalPage;
             }
@@ -111,21 +108,17 @@
             $("#pagingul li a").click(function () {
                 let $id = $(this).attr("id");
                 selectedPage = $(this).text();
-
                 if ($id == "next") selectedPage = next;
                 if ($id == "prev") selectedPage = prev;
 
                 globalCurrentPage = selectedPage;
 
-                paging(totalData, dataPerPage, pageCount, selectedPage);
                 displayData(selectedPage, dataPerPage);
+                paging(totalData, dataPerPage, pageCount, selectedPage);
+                
             });
         }
 
-        function displayData(currentPage, dataPerPage) {
-
-
-        }
     </script>
 }
 
