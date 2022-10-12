@@ -7,60 +7,56 @@
 
     <script src="~/utils/jquery.dataTables.min.js"></script>
     <script src="~/utils/dataTables.bootstrap4.min.js"></script>
+
     <script>
         let totalData;
         let dataPerPage;
         let pageCount = 10;
         let globalCurrentPage = 1;
 
-        window.addEventListener('load', () => {
-
-
+        $(document).ready(function () {
             dataPerPage = $("#dataPerPage").val();
             displayData(1, dataPerPage);
             paging(totalData, dataPerPage, pageCount, 1);
 
         });
+
         
-        async function displayData(currentPage, pageSize) {
+        function displayData(currentPage, pageSize) {
             const params = {
                 pageNo: currentPage,
                 pageSize: pageSize
             };
             const query_params = new URLSearchParams(params);
-            var data = await fetch(baseUrl + "/api/Board/GetBoardInfo?" + query_params, {
-                method: 'GET',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
+            $.ajax({
+                type: "GET",
+                url: baseUrl + "/api/Board/GetBoardInfo?" + query_params,
+                dataType: "json",
+                async: false,
+                error: function () {
+
                 },
-                redirect: 'follow'
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
+                success: function (data) {
+                    $('#hrList').DataTable({
+                        "lengthChange": false,
+                        "searching": false,
+                        "info": false,
+                        "paging": false,
+                        "destroy": true,
+                        "data": data.boardList,
+                        "columns": [
+                            { "data": "no" },
+                            { "data": "title" },
+                            { "data": "userName" },
+                            { "data": "createdAt" },
+                            { "data": "readCount" }
+                        ]
+                    });
+                    totalData = data.totalItems
+                    currentPage = data.currentPage
                 }
-            }).catch((e) => {
-                alert(e);
             });
 
-            $('#hrList').DataTable({
-                "lengthChange": false,
-                "searching": false,
-                "info": false,
-                "paging": false,
-                "destroy": true,
-                "data": data.boardList,
-                "columns": [
-                    { "data": "no" },
-                    { "data": "title" },
-                    { "data": "userName" },
-                    { "data": "createdAt" },
-                    { "data": "readCount" }
-                ]
-            });
-
-            totalData = data.totalItems
-            currentPage = data.currentPage
         }
 
         function paging(totalData, dataPerPage, pageCount, currentPage) {
@@ -85,6 +81,10 @@
 
             let pageHtml = "";
 
+            if (currentPage != 1) {
+                pageHtml += "<li><a href='#' id='first'> First </a></li>";
+            }
+
             if (prev > 0) {
                 pageHtml += "<li><a href='#' id='prev'> Prev </a></li>";
             }
@@ -102,6 +102,8 @@
                 pageHtml += "<li><a href='#' id='next'> Next </a></li>";
             }
 
+            pageHtml += "<li><a href='#' id='last'> Last </a></li>";
+
             $("#pagingul").html(pageHtml);
             let displayCount = "";
 
@@ -110,6 +112,9 @@
                 selectedPage = $(this).text();
                 if ($id == "next") selectedPage = next;
                 if ($id == "prev") selectedPage = prev;
+
+                if ($id == "first") selectedPage = 1;
+                if ($id == "last") selectedPage = totalPage;
 
                 globalCurrentPage = selectedPage;
 
@@ -163,7 +168,7 @@
                 </tbody>
 
             </table>
-            <ul id="pagingul">
+            <ul class="pagingul" id="pagingul">
             </ul>
         </div>
     </div>
