@@ -1,0 +1,17 @@
+@page
+@{
+    ViewData["Title"] = "BoardDetail";
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let params = new URLSearchParams(location.search);
+            let test = params.get('no');
+            console.log(test);
+
+        });
+    </script>
+}
+
+
