@@ -6,11 +6,22 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            let params = new URLSearchParams(location.search);
-            let test = params.get('no');
-            console.log(test);
-
+            GetData(location.search);
         });
+        function GetData(params) {
+            console.log(params);
+            $.ajax({
+                type: "GET",
+                url: baseUrl + "/api/Board/GetBoardDetails" + params,
+                dataType: "json",
+                error: function (e) {
+                    console.log(e);
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
     </script>
 }
 

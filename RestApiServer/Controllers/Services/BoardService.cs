@@ -141,7 +141,41 @@ namespace RestApiServer.Controllers.Services
                 throw;
             }
         }
+        private async Task<BoardDetails> GetBoardInfo(int no)
+        {
+            try
+            {
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("SELECT");
+                sql.AppendLine("No,");
+                sql.AppendLine("Title,");
+                sql.AppendLine("Content,");
+                sql.AppendLine("UserID,");
+                sql.AppendLine("UserName,");
+                sql.AppendLine("UpdatedAt");
+                sql.AppendLine("FROM");
+                sql.AppendLine("TBL_BOARD");
+                sql.AppendLine("WHERE");
+                sql.AppendLine("No = @No");
 
+                var boardInfo = await conn.QueryFirstAsync<Board>(sql.ToString(), new { No = no });
+
+                return new BoardDetails()
+                {
+                    No = boardInfo.No,
+                    Title = boardInfo.Title,
+                    Content = boardInfo.Content,
+                    UserID = boardInfo.UserID,
+                    UserName = boardInfo.UserName,
+                    UpdatedAt = boardInfo.UpdatedAt,
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return null;
+            }
+        }
         #endregion
 
         Task<BoardInfo> IBoard.GetBoardList(int pageNo, int itemPerPage, int numberLInksPerPage, string cmb, string keyWord)
@@ -153,6 +187,12 @@ namespace RestApiServer.Controllers.Services
         {
             return UpdateReadCount(no);
         }
+
+        Task<BoardDetails> IBoard.GetBoardInfo(int no)
+        {
+            return GetBoardInfo(no);
+        }
+
     }
 }
 
