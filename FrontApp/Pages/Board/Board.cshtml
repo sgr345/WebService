@@ -17,11 +17,14 @@
         $(document).ready(function () {
             dataPerPage = $("#dataPerPage").val();
             displayData(1, dataPerPage);
-            paging(totalData, dataPerPage, pageCount, 1);
 
         });
 
-        
+        $("#dataPerPage").change(function () {
+            dataPerPage = $("#dataPerPage").val();
+            displayData(globalCurrentPage, dataPerPage);
+        });
+
         function displayData(currentPage, pageSize) {
             const params = {
                 pageNo: currentPage,
@@ -32,9 +35,8 @@
                 type: "GET",
                 url: baseUrl + "/api/Board/GetBoardInfo?" + query_params,
                 dataType: "json",
-                async: false,
                 error: function () {
-
+                    alert("error");
                 },
                 success: function (data) {
                     $('#hrList').DataTable({
@@ -54,12 +56,14 @@
                     });
                     totalData = data.totalItems
                     currentPage = data.currentPage
+                    paging(totalData, dataPerPage, pageCount, currentPage);
                 }
             });
 
         }
 
         function paging(totalData, dataPerPage, pageCount, currentPage) {
+
             console.log(dataPerPage)
             console.log(totalData)
 
@@ -81,10 +85,6 @@
 
             let pageHtml = "";
 
-            if (currentPage != 1) {
-                pageHtml += "<li><a href='#' id='first'> First </a></li>";
-            }
-
             if (prev > 0) {
                 pageHtml += "<li><a href='#' id='prev'> Prev </a></li>";
             }
@@ -101,9 +101,6 @@
             if (last < totalPage) {
                 pageHtml += "<li><a href='#' id='next'> Next </a></li>";
             }
-
-            pageHtml += "<li><a href='#' id='last'> Last </a></li>";
-
             $("#pagingul").html(pageHtml);
             let displayCount = "";
 
@@ -113,14 +110,8 @@
                 if ($id == "next") selectedPage = next;
                 if ($id == "prev") selectedPage = prev;
 
-                if ($id == "first") selectedPage = 1;
-                if ($id == "last") selectedPage = totalPage;
-
                 globalCurrentPage = selectedPage;
-
                 displayData(selectedPage, dataPerPage);
-                paging(totalData, dataPerPage, pageCount, selectedPage);
-                
             });
         }
 
