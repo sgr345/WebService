@@ -40,5 +40,15 @@ namespace RestApiServer.Controllers
 
             return Ok(boardInfo);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetBoardDetails(int no)
+        {
+            string message = string.Empty;
+
+            board.UpdateReadCount(no);
+            var result = await board.GetBoardInfo(no);
+            
+            return Ok(result);
+        }
     }
 }

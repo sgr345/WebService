@@ -18,6 +18,11 @@
             dataPerPage = $("#dataPerPage").val();
             displayData(1, dataPerPage);
 
+            $('#tb').on('click', 'tr', function () {
+                const params = new URLSearchParams({ no: $(this).children(":first").text() });
+                window.location = "/Board/BoardDetail?" + params;
+            });
+
         });
 
         $("#dataPerPage").change(function () {
@@ -46,6 +51,7 @@
                         "paging": false,
                         "destroy": true,
                         "data": data.boardList,
+
                         "columns": [
                             { "data": "no" },
                             { "data": "title" },
@@ -53,6 +59,7 @@
                             { "data": "createdAt" },
                             { "data": "readCount" }
                         ]
+
                     });
                     totalData = data.totalItems
                     currentPage = data.currentPage
@@ -152,7 +159,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tb">
                     <tr>
                         <td colspan="7">Data Not Exist</td>
                     </tr>

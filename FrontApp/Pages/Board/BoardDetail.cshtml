@@ -1,0 +1,28 @@
+@page
+@{
+    ViewData["Title"] = "BoardDetail";
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            GetData(location.search);
+        });
+        function GetData(params) {
+            console.log(params);
+            $.ajax({
+                type: "GET",
+                url: baseUrl + "/api/Board/GetBoardDetails" + params,
+                dataType: "json",
+                error: function (e) {
+                    console.log(e);
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+}
+
+
