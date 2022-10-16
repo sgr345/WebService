@@ -84,6 +84,7 @@ namespace RestApiServer.Controllers
                     SetCookies("X-Access-Token", Token.Token, 1);
                     SetCookies("X-Refresh-Token", Token.RefreshToken);
                     Response.Cookies.Append("X-UserName", user.UserName, new CookieOptions() { HttpOnly= false, SameSite= SameSiteMode.Strict, Expires= DateTime.Now.AddMonths(1) });
+                    Response.Cookies.Append("X-UserID", user.UserID, new CookieOptions() { HttpOnly= false, SameSite= SameSiteMode.Strict, Expires= DateTime.Now.AddMonths(1) });
                 }
                 else
                 {

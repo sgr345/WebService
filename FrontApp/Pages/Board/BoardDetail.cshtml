@@ -4,8 +4,7 @@
 }
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
+    <script>$(document).ready(function () {
             GetData(location.search);
         });
         function GetData(params) {
@@ -18,11 +17,34 @@
                     console.log(e);
                 },
                 success: function (data) {
+                    $('#lbl_title').text(data.title);
+                    $('#lbl_name').text(data.userName);
+                    $('#txt_content').text(data.content);
                     console.log(data);
+                    console.log(userId);
+                    if (data.userID == userId) {
+                        $('#btn_Delete').show();
+                    }
                 }
             });
-        }
-    </script>
+        }</script>
 }
 
-
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="form-group">
+            <label>Title</label>
+            <label id="lbl_title"></label>
+        </div>
+        <div class="form-group">
+            <label>UserName</label>
+            <label id="lbl_name"></label>
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Content</label>
+            <textarea readonly class="form-control" id="txt_content" name="contents" rows="10"></textarea>
+        </div>
+        <br />
+        <button id="btn_Delete" style="display:none">Delete</button>
+    </div>
+</div>
