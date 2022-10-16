@@ -5,6 +5,7 @@
 
 let baseUrl = "https://localhost:1235";
 let userInfo = get_cookie('X-UserName');
+let userId = get_cookie('X-UserID');
 
 function LogOut() {
     fetch(baseUrl + "/api/User/LogOut", {
