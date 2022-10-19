@@ -176,6 +176,41 @@ namespace RestApiServer.Controllers.Services
                 return null;
             }
         }
+        private async Task<int> BoardSubmit(BoardForm boardForm)
+        {
+            try
+            {
+                Board board = new Board()
+                {
+                    Title = boardForm.Title,
+                    Content = boardForm.Content,
+                    UserID = boardForm.UserID,
+                    UserName = boardForm.UserName
+                };
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("INSERT INTO TBL_BOARD");
+                sql.AppendLine("(");
+                sql.AppendLine("Title,");
+                sql.AppendLine("Content,");
+                sql.AppendLine("UserID,");
+                sql.AppendLine("UserName");
+                sql.AppendLine(")");
+                sql.AppendLine("VALUES");
+                sql.AppendLine("(");
+                sql.AppendLine("@Title,");
+                sql.AppendLine("@Content,");
+                sql.AppendLine("@UserID,");
+                sql.AppendLine("@UserName");
+                sql.AppendLine(")");
+                return await conn.ExecuteAsync(sql.ToString(), board);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                throw;
+            }
+        }
+
         #endregion
 
         Task<BoardInfo> IBoard.GetBoardList(int pageNo, int itemPerPage, int numberLInksPerPage, string cmb, string keyWord)
@@ -192,7 +227,10 @@ namespace RestApiServer.Controllers.Services
         {
             return GetBoardInfo(no);
         }
-
+        Task<int> IBoard.BoardSubmit(BoardForm boardForm)
+        {
+            return BoardSubmit(boardForm);
+        }
     }
 }
 

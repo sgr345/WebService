@@ -28,6 +28,19 @@ namespace RestApiServer.Common.Connection
             }
 
         }
+        public Task<int> ExecuteAsync(string sql, object param = null)
+        {
+            try
+            {
+                return conn.ExecuteAsync(sql, param);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.ToString());
+                throw;
+            }
+
+        }
 
         public IEnumerable<T> Query<T>(string sql, object param = null)
         {

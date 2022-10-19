@@ -4,6 +4,7 @@ namespace RestApiServer.Common.Connection
     public interface IDBConnection
     {
         int Execute(string sql, object param = null);
+        Task<int> ExecuteAsync(string sql, object param = null);
         IEnumerable<T> Query<T>(string sql, object param = null);
         Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null);
         IEnumerable<dynamic> Query(string sql, object param = null);
