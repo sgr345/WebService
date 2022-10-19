@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestApiServer.Controllers.Interfaces;
+using RestApiServer.Models.ViewModel;
 
 namespace RestApiServer.Controllers
 {
@@ -49,6 +54,32 @@ namespace RestApiServer.Controllers
             var result = await board.GetBoardInfo(no);
             
             return Ok(result);
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, Roles = "AssociateUser")]
+        public async Task<IActionResult> Post(BoardForm boardForm)
+        {
+            var token = Request.Cookies["X-Access-Token"];
+            var handler = new JwtSecurityTokenHandler();
+            var claims = handler.ReadJwtToken(token).Claims;
+            if (boardForm.UserID != claims.First(claims => claims.Type == "Id").Value.ToString())
+            {
+               return Ok("UserID Error");
+            }
+            if(boardForm.UserName != claims.First(claims => claims.Type == ClaimTypes.Name).Value.ToString())
+            {
+                return Ok("UserName Error");
+            }
+
+            if (await board.BoardSubmit(boardForm) > 0)
+            {
+                return Ok("Success");
+            }
+            else
+            {
+                return Ok("failed");
+            }
+
         }
     }
 }
