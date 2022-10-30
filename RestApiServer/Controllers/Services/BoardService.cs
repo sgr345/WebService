@@ -38,6 +38,7 @@ namespace RestApiServer.Controllers.Services
                 sql.AppendLine("FROM");
                 sql.AppendLine("TBL_BOARD");
                 sql.AppendLine("WHERE 0=0");
+                sql.AppendLine("AND DeletedAt IS NULL");
 
                 sql.AppendLine(whereSql);
 
@@ -50,7 +51,7 @@ namespace RestApiServer.Controllers.Services
                 var boardList = await conn.QueryAsync<Board>(sql.ToString());
 
                 StringBuilder countSql = new StringBuilder();
-                countSql.AppendLine("SELECT COUNT(No) FROM TBL_BOARD WHERE 0=0");
+                countSql.AppendLine("SELECT COUNT(No) FROM TBL_BOARD WHERE DeletedAt IS NULL");
                 countSql.AppendLine(whereSql);
 
                 int totalBoardCount = await conn.QueryFirstAsync<int>(countSql.ToString());
@@ -76,24 +77,6 @@ namespace RestApiServer.Controllers.Services
                 throw;
             }
         }
-        
-        private int DeleteBoardInfo(int no)
-        {
-            try
-            {
-                StringBuilder sql = new StringBuilder();
-                sql.AppendLine("DELETE FROM TBL_BOARD");
-                sql.AppendLine("WHERE");
-                sql.AppendLine("No = @No");
-                return conn.Execute(sql.ToString(), new { No = no });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-                throw;
-            }
-        }
-        
         private int UpdateReadCount(int no)
         {
             try
@@ -156,7 +139,8 @@ namespace RestApiServer.Controllers.Services
                 sql.AppendLine("FROM");
                 sql.AppendLine("TBL_BOARD");
                 sql.AppendLine("WHERE");
-                sql.AppendLine("No = @No");
+                sql.AppendLine("DeletedAt IS NULL");
+                sql.AppendLine("AND No = @No");
 
                 var boardInfo = await conn.QueryFirstAsync<Board>(sql.ToString(), new { No = no });
 
@@ -210,7 +194,61 @@ namespace RestApiServer.Controllers.Services
                 throw;
             }
         }
+        private async Task<int> UpdateBoardInfo(BoardDetails boardDetails)
+        {
+            try
+            {
+                Board board = new Board()
+                {
+                    No = boardDetails.No,
+                    Title = boardDetails.Title,
+                    Content = boardDetails.Content,
+                    UserName = boardDetails.UserName,
+                    UserID = boardDetails.UserID,
+                    UpdatedAt = DateTime.Now,
+                };
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("UPDATE TBL_BOARD");
+                sql.AppendLine("SET");
+                sql.AppendLine("Title = @Title,");
+                sql.AppendLine("Content = @Content,");
+                sql.AppendLine("UserName = @UserName,");
+                sql.AppendLine("UpdatedAt = @UpdatedAt");
+                sql.AppendLine("WHERE");
+                sql.AppendLine("UserID = @UserID AND");
+                sql.AppendLine("No = @No");
+                return await conn.ExecuteAsync(sql.ToString(), board);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                throw;
+            }
+        }
+        private async Task<int> DeleteBoardDetails(BoardDetails boardDetails)
+        {
+            try
+            {
+                Board board = new Board()
+                {
+                    No = boardDetails.No,
+                    DeletedAt = DateTime.Now,
+                };
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("UPDATE TBL_BOARD");
+                sql.AppendLine("SET");
+                sql.AppendLine("DeletedAt = @DeletedAt");
+                sql.AppendLine("WHERE");
+                sql.AppendLine("No = @No");
 
+                return await conn.ExecuteAsync(sql.ToString(), board);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                throw;
+            }
+        }
         #endregion
 
         Task<BoardInfo> IBoard.GetBoardList(int pageNo, int itemPerPage, int numberLInksPerPage, string cmb, string keyWord)
@@ -230,6 +268,14 @@ namespace RestApiServer.Controllers.Services
         Task<int> IBoard.BoardSubmit(BoardForm boardForm)
         {
             return BoardSubmit(boardForm);
+        }
+        Task<int> IBoard.UpdateBoardDetails(BoardDetails boardDetails)
+        {
+            return UpdateBoardInfo(boardDetails);
+        }
+        Task<int> IBoard.DeleteBoardDetails(BoardDetails boardDetails)
+        {
+            return DeleteBoardDetails(boardDetails);
         }
     }
 }
