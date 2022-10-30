@@ -21,6 +21,25 @@ namespace RestApiServer.Controllers
         private IBoard board;
         private HttpContext _context;
 
+        #region LocalMethod
+        private List<string> CheckToken(string userID, string userName)
+        {
+            List<string> errorList = new List<string>();
+            var token = Request.Cookies["X-Access-Token"];
+            var handler = new JwtSecurityTokenHandler();
+            var claims = handler.ReadJwtToken(token).Claims;
+            if (userID != claims.First(claims => claims.Type == "Id").Value.ToString())
+            {
+                errorList.Add("UserID Error");
+            }
+            if (userName != claims.First(claims => claims.Type == ClaimTypes.Name).Value.ToString())
+            {
+                errorList.Add("UserName Error");
+            }
+            return errorList;
+        }
+        #endregion
+
         public BoardController(IHttpContextAccessor accessor, IBoard board, ILogger<BoardController> logger)
         {
             this.logger = logger;
@@ -55,20 +74,27 @@ namespace RestApiServer.Controllers
             
             return Ok(result);
         }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, Roles = "AssociateUser")]
         public async Task<IActionResult> Post(BoardForm boardForm)
         {
-            var token = Request.Cookies["X-Access-Token"];
-            var handler = new JwtSecurityTokenHandler();
-            var claims = handler.ReadJwtToken(token).Claims;
-            if (boardForm.UserID != claims.First(claims => claims.Type == "Id").Value.ToString())
+            //var token = Request.Cookies["X-Access-Token"];
+            //var handler = new JwtSecurityTokenHandler();
+            //var claims = handler.ReadJwtToken(token).Claims;
+            //if (boardForm.UserID != claims.First(claims => claims.Type == "Id").Value.ToString())
+            //{
+            //   return Ok("UserID Error");
+            //}
+            //if(boardForm.UserName != claims.First(claims => claims.Type == ClaimTypes.Name).Value.ToString())
+            //{
+            //    return Ok("UserName Error");
+            //}
+
+            var validateList = CheckToken(boardForm.UserID, boardForm.UserName);
+            if (validateList.Count != 0)
             {
-               return Ok("UserID Error");
-            }
-            if(boardForm.UserName != claims.First(claims => claims.Type == ClaimTypes.Name).Value.ToString())
-            {
-                return Ok("UserName Error");
+                return Ok(string.Join(',',validateList));
             }
 
             if (await board.BoardSubmit(boardForm) > 0)
@@ -80,6 +106,43 @@ namespace RestApiServer.Controllers
                 return Ok("failed");
             }
 
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, Roles = "AssociateUser")]
+        public async Task<IActionResult> Modify(BoardDetails boardDetails)
+        {
+
+            var validateList = CheckToken(boardDetails.UserID, boardDetails.UserName);
+            if (validateList.Count != 0)
+            {
+                return Ok(string.Join(',', validateList));
+            }
+
+            if (await board.UpdateBoardDetails(boardDetails) > 0)
+            {
+                return Ok("Success");
+            }
+            else
+            {
+                return Ok("Fail");
+            }
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, Roles = "AssociateUser")]
+        public async Task<IActionResult> Delete(BoardDetails boardDetails)
+        {
+            var validateList = CheckToken(boardDetails.UserID, boardDetails.UserName);
+            if (validateList.Count != 0)
+            {
+                return Ok(string.Join(',', validateList));
+            }
+            if (await board.DeleteBoardDetails(boardDetails) == 0)
+            {
+                return Ok("Delete Failed");
+            }
+            return Ok();
         }
     }
 }
