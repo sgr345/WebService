@@ -1,10 +1,10 @@
 -- -------------------------------------------------------------
--- TablePlus 5.0.0(454)
+-- TablePlus 5.0.2(458)
 --
 -- https://tableplus.com/
 --
 -- Database: webdb
--- Generation Time: 2022-10-10 23:08:17.3010
+-- Generation Time: 2022-10-30 13:20:08.8780
 -- -------------------------------------------------------------
 
 
@@ -24,6 +24,7 @@ CREATE TABLE "public"."tbl_board" (
     "username" text NOT NULL,
     "createdat" timestamp NOT NULL DEFAULT now(),
     "updatedat" timestamp,
+    "deletedat" timestamp,
     PRIMARY KEY ("no")
 );
 
