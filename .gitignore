@@ -46,14 +46,9 @@ Thumbs.db
 *.mov
 *.wmv
 
-RestApiServer/bin/*
-RestApiServer/obj/*
-RestApiServer/.vs/*
-RestApiServer/Utilities/DataProtector/*
-RestApiServer/Properties/PublishProfiles/*
-RestApiServer/logs/*
-
-FrontApp/bin/*
-FrontApp/obj/*
-FrontApp/.vs/*
-FrontApp/Properties/PublishProfiles/*
+bin/*
+obj/*
+.vs/*
+Utilities/DataProtector/*
+Properties/PublishProfiles/*
+logs/*
